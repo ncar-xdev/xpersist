@@ -23,7 +23,7 @@ class persisted_Dataset(object):
     to ensure that the cache file is correct (i.e., it was produced by the same function
     called with the same arguments).
 
-    On the first call, however, assume the cache file is correct, unless forced override.
+    On the first call, however, assume the cache file is correct.
     """
 
     # class property, dictionary: {cache_file: tokenized_name, ...}

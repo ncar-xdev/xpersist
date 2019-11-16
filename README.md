@@ -4,6 +4,12 @@
 Simple utility for wrapping functions that generate an `xarray.Dataset` and cache the result to file. If the cache file exists, don't recompute, but read back in from file.
 
 
+Attempt to detect changes in the function and arguments used to generate the dataset,
+to ensure that the cache file is correct (i.e., it was produced by the same function
+called with the same arguments).
+
+On the first call, however, assume the cache file is correct.
+
 # Examples
 
 ## Applied to function
