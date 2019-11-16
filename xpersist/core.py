@@ -137,28 +137,39 @@ def persist_ds(func, name=None, path=None, format='nc', open_ds_kwargs={}):
     -------
     Apply to function:
 
-    >>> def func(scaleby):
-    ...   return xr.Dataset({'x': xr.DataArray(np.ones((50,))*scaleby)})
+    In [1]: def func(scaleby):
+       ...:     return xr.Dataset({'x': xr.DataArray(np.ones((50,))*scaleby)})
 
-    >>> func(10)
+    In [2]: func(10)
+    Out[2]:
     <xarray.Dataset>
     Dimensions:  (dim_0: 50)
     Dimensions without coordinates: dim_0
     Data variables:
         x        (dim_0) float64 10.0 10.0 10.0 10.0 10.0 ... 10.0 10.0 10.0 10.0
 
-    >>> ds = xpersist(func, name='func_output')(10)
-    >>> ds
+    In [3]: ds = xp.persist_ds(func, name='func-output')(10)
+    making xpersist_cache
+    writing cache file: xpersist_cache/func-output.nc
+
+    In [4]: ds
+    Out[4]:
+    <xarray.Dataset>
     Dimensions:  (dim_0: 50)
     Dimensions without coordinates: dim_0
     Data variables:
         x        (dim_0) float64 10.0 10.0 10.0 10.0 10.0 ... 10.0 10.0 10.0 10.0
 
+
     Can be used as a decorator:
 
-    >>> @xpersist(name='func_output')
-    ... def func(scaleby):
-    ...   return xr.Dataset({'x': xr.DataArray([np.ones(50)*scaleby])})
+    In [5]: @xp.persist_ds(name='func-output')
+        ...: def func(scaleby):
+        ...:     return xr.Dataset({'x': xr.DataArray(np.ones((50,))*scaleby)})
+
+    In [6]: ds = func(10)
+    name mismatch, removing: xpersist_cache/func-output.nc
+    writing cache file: xpersist_cache/func-output.nc
 
     """
     if not callable(func):
