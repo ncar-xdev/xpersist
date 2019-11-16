@@ -171,6 +171,9 @@ def persist_ds(func, name=None, path=None, format='nc', open_ds_kwargs={}):
     name mismatch, removing: xpersist_cache/func-output.nc
     writing cache file: xpersist_cache/func-output.nc
 
+    In [7]: ds = func(10)
+    reading cached file: xpersist_cache/func-output.nc
+
     """
     if not callable(func):
         raise ValueError('func must be callable')
