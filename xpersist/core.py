@@ -1,7 +1,5 @@
 import os
 
-import uuid
-
 from toolz import curry
 
 import xarray as xr
@@ -35,14 +33,8 @@ class persisted_Dataset(object):
     def __init__(self, func, name=None, path=None, format='nc', open_ds_kwargs={}):
         """set instance attributes"""
         self._func = func
-
         self._name = name
-        if self._name is None:
-            self._name = uuid.uuid4()
-
         self._path = path
-        if self._path is None:
-            self._path = settings['cache_dir']
 
         if format not in _formats:
             raise ValueError(f'unknown format: {format}')
@@ -100,6 +92,12 @@ class persisted_Dataset(object):
         """call function or read cache"""
 
         token = dask.base.tokenize(self._func, args, kwargs)
+        if self._name is None:
+            self._name = f'persisted_Dataset-{token}'
+
+        if self._path is None:
+            self._path = settings['cache_dir']
+
         self._check_token_assign_action(token)
 
         if {'read_cache_trusted', 'read_cache_verified'}.intersection({self._actions[self._cache_file]}):

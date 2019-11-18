@@ -10,15 +10,21 @@ import pytest
 here = os.path.abspath(os.path.dirname(__file__))
 xp.settings['cache_dir'] = os.path.join(here, 'cached_data')
 
+def rm_tmpfile():
+    for p in ['tmp-*.nc', 'persisted_Dataset-*.nc']:
+        for f in glob(os.path.join(here, 'cached_data', p)):
+            os.remove(f)
+
+
 @pytest.fixture(autouse=True)
 def cleanup():
-    files = glob(os.path.join(here, 'cached_data', 'tmp-*.nc'))
-    for f in files:
-        os.remove(f)
+    rm_tmpfile()
     yield
-    files = glob(os.path.join(here, 'cached_data', 'tmp-*.nc'))
-    for f in files:
-        os.remove(f)
+    rm_tmpfile()
+
+def func(scaleby):
+    return xr.Dataset({'x': xr.DataArray(np.ones((50,))*scaleby)})
+
 
 # must be first test
 def test_xpersist_actions():
@@ -41,16 +47,17 @@ def test_xpersist_actions():
     file, action = xp.persisted_Dataset._actions.popitem()
     assert action == 'create_cache'
 
-def func(scaleby):
-    return xr.Dataset({'x': xr.DataArray(np.ones((50,))*scaleby)})
-
 
 def test_arg_check():
     with pytest.raises(ValueError, match='func must be callable'):
         xp.persist_ds('not a function')
 
 
-def test_dset():
+def test_xpersist_noname():
+    ds = xp.persist_ds(func)(10)
+
+
+def test_validate_dset():
     dsp = xp.persist_ds(func, name='test-dset')(10)
     file, action = xp.persisted_Dataset._actions.popitem()
     ds = xr.open_dataset(file)
