@@ -26,8 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           # $CONDA is an environment variable pointing to the root of the miniconda directory
-          $CONDA/bin/conda create -n dev -c conda-forge python=${{ matrix.python-version }}
-          $CONDA/bin/conda env update --file environment.yml --name dev -q
+          $CONDA/bin/conda create -n dev -c conda-forge python=${{ matrix.python-version }} --file requirements-dev.txt --quiet
           source $CONDA/bin/activate dev
           $CONDA_PREFIX/bin/python -m pip install . --quiet
           $CONDA/bin/conda list
@@ -35,12 +34,3 @@ jobs:
         run: |
           source $CONDA/bin/activate dev
           $CONDA_PREFIX/bin/pytest --junitxml=test-reports/junit.xml --cov=./ --verbose
-      # TODO: Token required-> https://github.com/codecov/codecov-action
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v1
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }} # Required
-      #     file: ./coverage.xml
-      #     flags: unittests
-      #     name: codecov-umbrella
-      #     yml: ./codecov.yml

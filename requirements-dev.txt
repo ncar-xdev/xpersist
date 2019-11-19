@@ -1,0 +1,6 @@
+numpy
+xarray
+dask
+toolz
+pytest
+pytest-cov
