@@ -30,11 +30,14 @@ class persisted_Dataset(object):
     # class property
     _actions = {}
 
-    def __init__(self, func, name=None, path=None, format='nc', open_ds_kwargs={}):
+    def __init__(self, func, name=None, path=None, trust_cache=False, clobber=False,
+                 format='nc', open_ds_kwargs={}):
         """set instance attributes"""
         self._func = func
         self._name = name
         self._path = path
+        self._trust_cache = trust_cache
+        self._clobber = clobber
 
         if format not in _formats:
             raise ValueError(f'unknown format: {format}')
@@ -46,22 +49,25 @@ class persisted_Dataset(object):
         """check for matching token, if appropriate"""
 
         if self._cache_exists:
+
+            # if we don't yet know about this file, assume it's the right one;
+            # this enables usage on first call in a Python session, for instance
+            known_cache = self._cache_file in persisted_Dataset._tokens
+            if not known_cache or self._trust_cache and not self._clobber:
+                print(f'assuming cache is correct')
+                persisted_Dataset._tokens[self._cache_file] = token
+                persisted_Dataset._actions[self._cache_file] = 'read_cache_trusted'
+
             # if the cache file is present and we know about it,
             # check the token; if the token doesn't match, remove the file
-            if self._cache_file in persisted_Dataset._tokens:
-                if token != persisted_Dataset._tokens[self._cache_file]:
+            elif known_cache:
+                if token != persisted_Dataset._tokens[self._cache_file] or self._clobber:
                     print(f'name mismatch, removing: {self._cache_file}')
                     os.remove(self._cache_file)
                     persisted_Dataset._actions[self._cache_file] = 'overwrite_cache'
                 else:
                     persisted_Dataset._actions[self._cache_file] = 'read_cache_verified'
 
-            # if we don't yet know about this file, assume it's the right one;
-            # this enables usage on first call in a Python session, for instance
-            else:
-                print(f'assuming cache is correct')
-                persisted_Dataset._tokens[self._cache_file] = token
-                persisted_Dataset._actions[self._cache_file] = 'read_cache_trusted'
         else:
             persisted_Dataset._tokens[self._cache_file] = token
             persisted_Dataset._actions[self._cache_file] = 'create_cache'
@@ -116,7 +122,8 @@ class persisted_Dataset(object):
 
 
 @curry
-def persist_ds(func, name=None, path=None, format='nc', open_ds_kwargs={}):
+def persist_ds(func, name=None, path=None, trust_cache=False, clobber=False,
+               format='nc', open_ds_kwargs={}):
     """Wraps a function to produce a ``persisted_Dataset``.
 
     Parameters
@@ -175,4 +182,4 @@ def persist_ds(func, name=None, path=None, format='nc', open_ds_kwargs={}):
     if not callable(func):
         raise ValueError('func must be callable')
 
-    return persisted_Dataset(func, name, path, format, open_ds_kwargs)
+    return persisted_Dataset(func, name, path, trust_cache, clobber, format, open_ds_kwargs)
