@@ -42,7 +42,6 @@ class persisted_Dataset(object):
 
         self._open_ds_kwargs = open_ds_kwargs
 
-
     def _check_token_assign_action(self, token):
         """check for matching token, if appropriate"""
 
@@ -66,9 +65,9 @@ class persisted_Dataset(object):
         else:
             persisted_Dataset._tokens[self._cache_file] = token
             persisted_Dataset._actions[self._cache_file] = 'create_cache'
-            if os.path.dirname(self._cache_file):
-                print('making '+os.path.dirname(self._cache_file))
-                os.makedirs(os.path.dirname(self._cache_file), exist_ok=True)
+            if os.path.dirname(self._cache_file) and not os.path.exists(self._path):
+                print(f'making {self._path}')
+                os.makedirs(self._path)
 
         assert persisted_Dataset._actions[self._cache_file] in _actions
 
