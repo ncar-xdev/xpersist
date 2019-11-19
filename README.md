@@ -1,3 +1,6 @@
+![Github Actions Status](https://github.com/matt-long/xpersist/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/matt-long/xpersist/branch/master/graph/badge.svg)](https://codecov.io/gh/matt-long/xpersist)
+[![PyPI](https://img.shields.io/pypi/v/xpersist.svg)](https://pypi.python.org/pypi/xpersist)
 
 # xpersist
 
