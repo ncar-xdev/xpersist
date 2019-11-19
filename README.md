@@ -1,3 +1,4 @@
+![Github Actions Status](https://github.com/matt-long/xpersist/workflows/CI/badge.svg)
 
 # xpersist
 
