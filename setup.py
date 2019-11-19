@@ -3,9 +3,9 @@
 
 """The setup script."""
 
-import sys
-from setuptools import setup
 from os.path import exists
+
+from setuptools import setup
 
 if exists('README.md'):
     with open('README.md') as f:
@@ -30,5 +30,7 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/matt-long/xpersist',
+    use_scm_version={'version_scheme': 'post-release', 'local_scheme': 'dirty-tag'},
+    setup_requires=['setuptools_scm', 'setuptools>=30.3.0'],
     zip_safe=False,
 )
