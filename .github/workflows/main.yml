@@ -30,6 +30,12 @@ jobs:
       - name: Run tests
         run: |
           pytest --junitxml=test-reports/junit.xml --cov=./ --verbose
-      - name: Upload coverage
-        run: |
-          codecov
+      # TODO: Token required-> https://github.com/codecov/codecov-action
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v1
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }} # Required
+      #     file: ./coverage.xml
+      #     flags: unittests
+      #     name: codecov-umbrella
+      #     yml: ./codecov.yml
