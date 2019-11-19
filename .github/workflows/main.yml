@@ -27,11 +27,11 @@ jobs:
         run: |
           # $CONDA is an environment variable pointing to the root of the miniconda directory
           $CONDA/bin/conda env update --file environment.yml --name base -q
-          $CONDA/bin/python -m pip install .
+          $CONDA/bin/python -m pip install . --quiet
           $CONDA/bin/conda list
       - name: Run tests
         run: |
-          CONDA/bin/pytest --junitxml=test-reports/junit.xml --cov=./ --verbose
+          $CONDA/bin/pytest --junitxml=test-reports/junit.xml --cov=./ --verbose
       # TODO: Token required-> https://github.com/codecov/codecov-action
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v1
