@@ -3,5 +3,6 @@ xarray
 dask
 toolz
 netCDF4
+zarr
 pytest
 pytest-cov
