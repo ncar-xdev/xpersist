@@ -1,3 +1,5 @@
+settings = {'cache_dir': 'xpersist_cache'}
+
 from pkg_resources import DistributionNotFound, get_distribution
 
 from .core import *  # noqa: F403, F401
@@ -7,5 +9,3 @@ try:
 except DistributionNotFound:
     # package is not installed
     pass
-
-settings = {'cache_dir': 'xpersist_cache'}
