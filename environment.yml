@@ -1,0 +1,10 @@
+name: base
+channels:
+  - conda-forge
+dependencies:
+  - xarray
+  - dask
+  - pytest
+  - pytest-cov
+  - netcdf4
+  - pip
