@@ -1,5 +1,7 @@
 import os
 import shutil
+import stat
+from contextlib import contextmanager
 from glob import glob
 from tempfile import TemporaryDirectory
 
@@ -109,3 +111,30 @@ def test_save_as_zarr():
         zarr_store, action = xp.PersistedDataset._actions.popitem()
         ds = xr.open_zarr(zarr_store, consolidated=True)
         xr.testing.assert_identical(dsp, ds)
+
+
+@contextmanager
+def no_write_permissions(path):
+    perm_orig = stat.S_IMODE(os.stat(path).st_mode)
+    perm_new = perm_orig ^ stat.S_IWRITE
+    try:
+        os.chmod(path, perm_new)
+        yield
+    finally:
+        os.chmod(path, perm_orig)
+
+
+def test_write_permissionerror():
+    with TemporaryDirectory() as local_store:
+        zarr_store = os.path.join(local_store, 'mypath.zarr')
+
+        # Zarr
+        with no_write_permissions(local_store):
+            with pytest.raises(PermissionError):
+                _ = xp.persist_ds(func, name='test-dset', path=zarr_store, format='zarr')(10)
+                assert not os.path.exists(zarr_store)
+
+        # netCDF
+        with no_write_permissions(local_store):
+            with pytest.raises(PermissionError):
+                _ = xp.persist_ds(func, name='test-dset', path=local_store)(10)

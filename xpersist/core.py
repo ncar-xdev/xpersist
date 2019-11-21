@@ -137,10 +137,19 @@ class PersistedDataset(object):
             print(f'writing cache file: {self._cache_file}')
 
             if self._format == 'nc':
-                ds.to_netcdf(self._cache_file)
+                try:
+                    ds.to_netcdf(self._cache_file)
+                except Exception as exc:
+                    if os.path.exists(self._cache_file):
+                        os.remove(self._cache_file)
+                    raise exc
 
             elif self._format == 'zarr':
-                ds.to_zarr(self._cache_file, consolidated=True)
+                try:
+                    ds.to_zarr(self._cache_file, consolidated=True)
+                except Exception as exc:
+                    shutil.rmtree(self._cache_file, ignore_errors=True)
+                    raise exc
 
             return ds
 
