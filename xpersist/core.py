@@ -122,12 +122,15 @@ class PersistedDataset(object):
         ):
             print(f'reading cached file: {self._cache_file}')
             if self._format == 'nc':
-                return xr.open_dataset(self._cache_file, **self._open_ds_kwargs)
+                with xr.open_dataset(self._cache_file, **self._open_ds_kwargs) as ds:
+                    return ds
+
             elif self._format == 'zarr':
                 if 'consolidated' not in self._open_ds_kwargs:
                     zarr_kwargs = self._open_ds_kwargs.copy()
                     zarr_kwargs['consolidated'] = True
-                return xr.open_zarr(self._cache_file, **zarr_kwargs)
+                with xr.open_zarr(self._cache_file, **zarr_kwargs) as ds:
+                    return ds
 
         elif {'create_cache', 'overwrite_cache'}.intersection({self._actions[self._cache_file]}):
             # generate dataset
