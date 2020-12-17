@@ -13,7 +13,7 @@ _actions = {'read_cache_trusted', 'read_cache_verified', 'overwrite_cache', 'cre
 _formats = {'nc', 'zarr'}
 
 
-class PersistedDataset(object):
+class PersistedDataset:
     """
     Generate an `xarray.Dataset` from a function and cache the result to file.
     If the cache file exists, don't recompute, but read back in from file.
@@ -63,7 +63,7 @@ class PersistedDataset(object):
             # this enables usage on first call in a Python session, for instance
             known_cache = self._cache_file in PersistedDataset._tokens
             if not known_cache or self._trust_cache and not self._clobber:
-                print(f'assuming cache is correct')
+                print('assuming cache is correct')
                 PersistedDataset._tokens[self._cache_file] = token
                 PersistedDataset._actions[self._cache_file] = 'read_cache_trusted'
 
@@ -162,47 +162,9 @@ def persist_ds(
     open_ds_kwargs : dict, optional
        Keyword arguments to `xarray.open_dataset`.
 
-    Examples
+    Returns
     -------
-    Apply to function:
-
-    In [1]: def func(scaleby):
-       ...:     return xr.Dataset({'x': xr.DataArray(np.ones((50,))*scaleby)})
-
-    In [2]: func(10)
-    Out[2]:
-    <xarray.Dataset>
-    Dimensions:  (dim_0: 50)
-    Dimensions without coordinates: dim_0
-    Data variables:
-        x        (dim_0) float64 10.0 10.0 10.0 10.0 10.0 ... 10.0 10.0 10.0 10.0
-
-    In [3]: ds = xp.persist_ds(func, name='func-output')(10)
-    making xpersist_cache
-    writing cache file: xpersist_cache/func-output.nc
-
-    In [4]: ds
-    Out[4]:
-    <xarray.Dataset>
-    Dimensions:  (dim_0: 50)
-    Dimensions without coordinates: dim_0
-    Data variables:
-        x        (dim_0) float64 10.0 10.0 10.0 10.0 10.0 ... 10.0 10.0 10.0 10.0
-
-
-    Can be used as a decorator:
-
-    In [5]: @xp.persist_ds(name='func-output')
-        ...: def func(scaleby):
-        ...:     return xr.Dataset({'x': xr.DataArray(np.ones((50,))*scaleby)})
-
-    In [6]: ds = func(10)
-    name mismatch, removing: xpersist_cache/func-output.nc
-    writing cache file: xpersist_cache/func-output.nc
-
-    In [7]: ds = func(10)
-    reading cached file: xpersist_cache/func-output.nc
-
+    PersistedDataset
     """
     if not callable(func):
         raise ValueError('func must be callable')
