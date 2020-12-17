@@ -1,0 +1,22 @@
+name: xpersist-dev
+channels:
+  - conda-forge
+dependencies:
+  - cftime
+  - codecov
+  - dask
+  - h5netcdf
+  - ipython
+  - netcdf4
+  - pandas
+  - pip
+  - pre-commit
+  - pytest
+  - pytest-cov
+  - pytest-icdiff
+  - pytest-sugar
+  - pytest-xdist
+  - zarr
+  - pip:
+      - git+https://github.com/pydata/xarray.git
+      - -e ..
