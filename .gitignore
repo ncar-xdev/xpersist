@@ -110,3 +110,4 @@ docs/_build
 notes/
 pip-wheel-metadata/*
 tests/cached_data/tmp-*.nc
+tests/cached_data/test-dset.nc

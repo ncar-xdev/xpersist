@@ -4,3 +4,5 @@ dask
 toolz
 netCDF4
 zarr
+joblib>=1.0.0
+boltons >= 20.2
