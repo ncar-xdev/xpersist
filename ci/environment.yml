@@ -2,11 +2,13 @@ name: xpersist-dev
 channels:
   - conda-forge
 dependencies:
+  - boltons
   - cftime
   - codecov
   - dask
   - h5netcdf
   - ipython
+  - joblib
   - netcdf4
   - pandas
   - pip
