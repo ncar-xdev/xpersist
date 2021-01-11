@@ -12,6 +12,9 @@ from .vendor._provenance import (  # noqa: F401
 
 
 def get_partial_func_info(partial_fn: typing.Callable) -> typing.Dict[str, typing.Any]:
+    """
+    Return the partial function information namely module, name, source, etc.
+    """
     fn = inner_function(partial_fn)
     varargs, kargs = args_extractor(fn)(partial_fn.args, partial_fn.keywords)
     return {
