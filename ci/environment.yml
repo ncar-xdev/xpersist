@@ -4,10 +4,10 @@ channels:
 dependencies:
   - cftime
   - codecov
-  - dask
+  - dask>=2021.1.0
   - h5netcdf
   - ipython
-  - netcdf4
+  - netcdf4>=1.5.5
   - pandas
   - pip
   - pre-commit
@@ -16,7 +16,7 @@ dependencies:
   - pytest-icdiff
   - pytest-sugar
   - pytest-xdist
-  - xarray
-  - zarr
+  - xarray>=0.16.2
+  - zarr>=2.5
   - pip:
       - -e ..

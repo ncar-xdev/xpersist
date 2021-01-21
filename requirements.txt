@@ -1,6 +1,5 @@
-numpy
-xarray
-dask
+xarray>=0.16.2
+dask>=2021.1.0
 toolz
-netCDF4
-zarr
+netCDF4>=1.5.5
+zarr>=2.5
