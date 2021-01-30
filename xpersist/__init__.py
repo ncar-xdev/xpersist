@@ -1,11 +1,13 @@
+# flake8: noqa
 settings = {'cache_dir': 'xpersist_cache'}
 
 from pkg_resources import DistributionNotFound, get_distribution
 
-from .core import *  # noqa: F403, F401
+from .core import *
+from .env_info import Environment
 
 try:
     __version__ = get_distribution(__name__).version
-except DistributionNotFound:
+except DistributionNotFound:  # pragma: no cover
     # package is not installed
-    pass
+    __version__ = '9.9.9'  # pragma: no cover
