@@ -1,5 +1,9 @@
-xarray>=0.16.2
-dask>=2021.1.0
-toolz
-netCDF4>=1.5.5
-zarr>=2.5
+xarray
+zarr
+netcdf4
+pydantic
+catalogue
+fsspec
+joblib
+prefect >=0.15.9,<2.0
+xcollection

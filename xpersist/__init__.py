@@ -1,11 +1,13 @@
-settings = {'cache_dir': 'xpersist_cache'}
-
+#!/usr/bin/env python3
+# flake8: noqa
+""" Top-level module for xpersist. """
 from pkg_resources import DistributionNotFound, get_distribution
 
-from .core import *  # noqa: F403, F401
+from .cache import CacheStore
+from .registry import registry
+from .serializers import pick_serializer
 
 try:
-    __version__ = get_distribution(__name__).version
-except DistributionNotFound:
-    # package is not installed
-    pass
+    __version__ = get_distribution('xpersist').version
+except DistributionNotFound:  # pragma: no cover
+    __version__ = 'unknown'  # pragma: no cover
