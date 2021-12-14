@@ -103,10 +103,10 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-
 # Sphinx
 docs/_build
 .vscode/
 notes/
 pip-wheel-metadata/*
 tests/cached_data/tmp-*.nc
+dask-worker-space/
