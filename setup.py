@@ -3,34 +3,32 @@
 
 """The setup script."""
 
-from os.path import exists
 
 from setuptools import setup
 
-if exists('README.md'):
-    with open('README.md') as f:
-        long_description = f.read()
-else:
-    long_description = ''
+with open('README.md') as f:
+    long_description = f.read()
 
 with open('requirements.txt') as f:
-    install_requires = f.read().strip().split('\n')
+    requirements = f.read().strip().split('\n')
 
-test_requirements = ['pytest']
 
 setup(
-    maintainer='xdev',
+    maintainer='Xdev',
     maintainer_email='xdev@ucar.edu',
-    description='xpersist',
-    install_requires=install_requires,
-    license='Apache License 2.0',
+    description='xpersist provides custom caching utility functions in Python',
+    install_requires=requirements,
+    license='Apache Software License 2.0',
+    long_description_content_type='text/markdown',
     long_description=long_description,
     name='xpersist',
     packages=['xpersist'],
-    test_suite='tests',
-    tests_require=test_requirements,
-    url='https://github.com/matt-long/xpersist',
+    url='https://github.com/NCAR/xpersist',
+    project_urls={
+        'Documentation': 'https://github.com/NCAR/xpersist',
+        'Source': 'https://github.com/NCAR/xpersist',
+        'Tracker': 'https://github.com/NCAR/xpersist/issues',
+    },
     use_scm_version={'version_scheme': 'post-release', 'local_scheme': 'dirty-tag'},
-    setup_requires=['setuptools_scm', 'setuptools>=30.3.0'],
     zip_safe=False,
 )
