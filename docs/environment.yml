@@ -1,0 +1,28 @@
+name: xpersist-dev
+channels:
+  - nodefaults
+  - conda-forge
+dependencies:
+  - catalogue
+  - dask
+  - fsspec
+  - furo
+  - joblib
+  - jupyterlab
+  - myst-nb
+  - netcdf4
+  - pip
+  - prefect
+  - pydantic
+  - python=3.9
+  - sphinx-autobuild
+  - sphinx-comments
+  - sphinx-copybutton
+  - sphinx-inline-tabs
+  - xarray
+  - zarr
+  - pip:
+      - sphinxext-opengraph
+      - autodoc_pydantic
+      - -r ../requirements.txt
+      - -e ..
