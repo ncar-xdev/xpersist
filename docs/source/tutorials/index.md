@@ -18,6 +18,7 @@ Let's import the packages we will use.
 ```{code-cell} ipython3
 import xpersist
 import xarray as xr
+import tempfile
 ```
 
 ## Set Cache Location
@@ -25,7 +26,7 @@ import xarray as xr
 To use xpersist, you must set the location of the cache. This is done by instatiating a `CacheStore` object. The cache store points to a POSIX directory or a cloud storage bucket where all cached data will be stored. In this example, we will use a local directory.
 
 ```{code-cell} ipython3
-store = xpersist.CacheStore('/tmp/my-cache')
+store = xpersist.CacheStore(f'{tempfile.gettempdir()}/my-cache')
 store
 ```
 
