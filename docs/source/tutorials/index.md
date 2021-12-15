@@ -75,6 +75,7 @@ xr.testing.assert_equal(ds, ds_from_cache)
 
 ## Delete Data from the Cache
 
+<!--
 To delete data from the cache, use the `delete` method and pass the key of the data to delete.
 
 ```{code-cell} ipython3
@@ -91,4 +92,4 @@ To confirm that the data was deleted, we can check the available keys in the cac
 
 ```{code-cell} ipython3
 store.keys()
-```
+``` -->
