@@ -2,24 +2,9 @@
 
 
 import datetime
-import os
-import sys
 
 import xpersist
 
-
-cwd = os.getcwd()
-parent = os.path.dirname(cwd)
-sys.path.insert(0, parent)
-
-
-# -- General configuration -----------------------------------------------------
-
-# If your documentation needs a minimal Sphinx version, state it here.
-# needs_sphinx = '1.0'
-
-# Add any Sphinx extension module names here, as strings. They can be extensions
-# coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
@@ -68,19 +53,13 @@ jupyter_execute_notebooks = 'cache'
 execution_timeout = 600
 
 
-# The suffix of source filenames.
-# source_suffix = '.rst'
-
-# The encoding of source files.
-# source_encoding = 'utf-8-sig'
-
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 current_year = datetime.datetime.now().year
 project = u'xpersist'
-copyright = f'2020-{current_year}, xpersist development team'
+copyright = f'2020-{current_year}, xpersist developers'
 author = u'xpersist developers'
 
 
@@ -121,28 +100,6 @@ html_theme_options = dict(
 # html_logo = '../_static/images/NSF_4-Color_bitmap_Logo.png'
 
 
-# The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
-# html_favicon = None
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['../_static']
-
-# Sometimes the savefig directory doesn't exist and needs to be created
-# https://github.com/ipython/ipython/issues/8733
-# becomes obsolete when we can pin ipython>=5.2; see ci/requirements/doc.yml
-# ipython_savefig_dir = os.path.join(
-#     os.path.dirname(os.path.abspath(__file__)), '_build', 'html', '_static'
-# )
-
-# savefig_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'source', '_static')
-
-# os.makedirs(ipython_savefig_dir, exist_ok=True)
-# os.makedirs(savefig_dir, exist_ok=True)
-
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 html_last_updated_fmt = '%b %d, %Y'
@@ -180,8 +137,10 @@ texinfo_documents = [
     )
 ]
 
-ipython_warning_is_error = False
-ipython_execlines = []
 
-
-intersphinx_mapping = {}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', None),
+    'xarray': ('http://xarray.pydata.org/en/stable/', None),
+    'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
+    'fsspec': ('https://filesystem-spec.readthedocs.io/en/latest/', None),
+}
