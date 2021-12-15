@@ -9,7 +9,7 @@ kernelspec:
 
 # Use xpersist with Prefect
 
-To use xpersist with Prefect, we must ensure that the prefect package is isntalled.
+Let's begin by importing necessary packages and enabling checkpointing.
 
 ```{code-cell} ipython3
 import os
@@ -38,7 +38,7 @@ store = CacheStore(f'{tempfile.gettempdir()}/my-cache')
 
 ## Set Prefect Flow
 
-To enable persisting output of a task in xpersist's cache store, we need to define a `XpersistResult` object and pass it to the `result` argument of the `task` decorator.
+To enable persisting output of a task in xpersist's cache store, we need to define a {py:class}`xpersist.XpersistResult` object and pass it to the `result` argument of the `task` decorator.
 
 ```{code-cell} ipython3
 @task(
