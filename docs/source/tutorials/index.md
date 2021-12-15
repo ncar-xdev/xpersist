@@ -23,7 +23,7 @@ import tempfile
 
 ## Set Cache Location
 
-To use xpersist, you must set the location of the cache. This is done by instatiating a `CacheStore` object. The cache store points to a POSIX directory or a cloud storage bucket where all cached data will be stored. In this example, we will use a local directory.
+To use xpersist, we must set the location of the cache. This is done by instatiating a `CacheStore` object. The cache store points to a POSIX directory or a cloud storage bucket where all cached data will be stored. In this example, we will use a local directory.
 
 ```{code-cell} ipython3
 store = xpersist.CacheStore(f'{tempfile.gettempdir()}/my-cache')
@@ -39,7 +39,7 @@ ds = xr.tutorial.open_dataset('rasm').isel(time=slice(0, 2))
 value = {'bar': 'baz'}
 ```
 
-By default, xpersist will some heuristics to determine the right serializer to use. You can override this by specifying the serializer in the `serializer` argument.
+By default, xpersist will some heuristics to determine the right serializer to use. We can override this by specifying the serializer in the `serializer` argument.
 
 ```{code-cell} ipython3
 _ = store.put('foo', value)

@@ -9,11 +9,12 @@ kernelspec:
 
 # Use xpersist with Prefect
 
-To use xpersist with Prefect, you must ensure that the prefect package is isntalled.
+To use xpersist with Prefect, we must ensure that the prefect package is isntalled.
 
 ```{code-cell} ipython3
 import os
-os.environ['PREFECT__FLOWS__CHECKPOINTING'] = 'True'
+
+os.environ["PREFECT__FLOWS__CHECKPOINTING"] = "True"
 
 import tempfile
 import time
@@ -40,19 +41,27 @@ store = CacheStore(f'{tempfile.gettempdir()}/my-cache')
 To enable persisting output of a task in xpersist's cache store, we need to define a `XpersistResult` object and pass it to the `result` argument of the `task` decorator.
 
 ```{code-cell} ipython3
-@task(target='bar', result=XpersistResult(store, serializer='xarray.zarr', serializer_dump_kwargs={'mode': 'w'}))
+@task(
+    target="bar",
+    result=XpersistResult(
+        store, serializer="xarray.zarr", serializer_dump_kwargs={"mode": "w"}
+    ),
+)
 def get_data():
-    ds = xr.DataArray(range(10), dims='x', name='bar').to_dataset()
+    ds = xr.DataArray(range(10), dims="x", name="bar").to_dataset()
     time.sleep(5)
     return ds
+
 
 @task
 def total(ds):
     return ds.sum()
 
-with Flow('my-flow') as flow:
+
+with Flow("my-flow") as flow:
     ds = get_data()
     total(ds)
+
 ```
 
 ```{code-cell} ipython3
