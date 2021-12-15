@@ -28,10 +28,8 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
-    # 'IPython.sphinxext.ipython_console_highlighting',
-    # 'IPython.sphinxext.ipython_directive',
     'sphinx.ext.napoleon',
-    'myst_parser',
+    'myst_nb',
     'sphinxext.opengraph',
     'sphinx_copybutton',
     'sphinx_comments',
@@ -44,19 +42,10 @@ autodoc_member_order = 'groupwise'
 myst_enable_extensions = ['amsmath', 'colon_fence', 'deflist', 'html_image']
 myst_url_schemes = ['http', 'https', 'mailto']
 
-comments_config = {
-    'utterances': {'repo': 'NCAR/esds-xpersist', 'optional': 'config', 'label': '💬 comment'},
-    'hypothesis': False,
-}
-
 # sphinx-copybutton configurations
 copybutton_prompt_text = r'>>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: '
 copybutton_prompt_is_regexp = True
 
-extlinks = {
-    'issue': ('https://github.com/NCAR/esds-xpersist/issues/%s', 'GH#'),
-    'pr': ('https://github.com/NCAR/esds-xpersist/pull/%s', 'GH#'),
-}
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -75,6 +64,9 @@ napoleon_preprocess_types = False
 autodoc_pydantic_model_show_json = True
 autodoc_pydantic_settings_show_json = False
 
+jupyter_execute_notebooks = 'cache'
+execution_timeout = 600
+
 
 # The suffix of source filenames.
 # source_suffix = '.rst'
@@ -89,7 +81,7 @@ master_doc = 'index'
 current_year = datetime.datetime.now().year
 project = u'xpersist'
 copyright = f'2020-{current_year}, xpersist development team'
-author = u'esds-xpersist developers'
+author = u'xpersist developers'
 
 
 # The short X.Y version.
@@ -114,7 +106,7 @@ html_title = ''
 
 html_context = {
     'github_user': 'NCAR',
-    'github_repo': 'esds-xpersist',
+    'github_repo': 'xpersist',
     'github_version': 'main',
     'doc_path': 'docs',
 }
@@ -172,17 +164,17 @@ latex_elements = {
 }
 
 
-latex_documents = [('index', 'esds-xpersist.tex', u'esds-xpersist Documentation', author, 'manual')]
+latex_documents = [('index', 'xpersist.tex', u'xpersist Documentation', author, 'manual')]
 
-man_pages = [('index', 'esds-xpersist', u'esds-xpersist Documentation', [author], 1)]
+man_pages = [('index', 'xpersist', u'xpersist Documentation', [author], 1)]
 
 texinfo_documents = [
     (
         'index',
-        'esds-xpersist',
-        u'esds-xpersist Documentation',
+        'xpersist',
+        u'xpersist Documentation',
         author,
-        'esds-xpersist',
+        'xpersist',
         'One line description of project.',
         'Miscellaneous',
     )
