@@ -51,6 +51,7 @@ autodoc_pydantic_settings_show_json = False
 
 jupyter_execute_notebooks = 'cache'
 execution_timeout = 600
+execution_allow_errors = True
 
 
 # The master toctree document.
