@@ -1,8 +1,10 @@
-# How-to Guides
+# How to
+
+How to:
 
 ```{toctree}
 ---
-maxdepth: 2
-caption: How-to Guides
+maxdepth: 1
 ---
+install-xpersist.md
 ```
