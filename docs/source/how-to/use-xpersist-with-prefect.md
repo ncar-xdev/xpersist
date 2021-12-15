@@ -61,7 +61,7 @@ flow.visualize()
 
 ## Run the Flow
 
-Now we can run the flow. Notice that the flow runs for five seconds and the result for `get_data() ` task is cached.
+Now we can run the flow. Notice that the flow runs for five seconds and the result for `get_data()` task is cached.
 
 ```{code-cell} ipython3
 %%time
