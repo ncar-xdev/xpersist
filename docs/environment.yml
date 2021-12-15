@@ -12,6 +12,7 @@ dependencies:
   - myst-nb
   - netcdf4
   - pip
+  - pooch
   - prefect
   - pydantic
   - python=3.9
