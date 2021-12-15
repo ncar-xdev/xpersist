@@ -33,9 +33,9 @@ For more details and examples, refer to the relevant chapters in the main part o
 
 ```{eval-rst}
 .. autosummary::
-    xpersist.prefect.result.xpersistResult
+    xpersist.prefect.result.XpersistResult
 
-.. autoclass:: xpersist.prefect.result.xpersistResult
+.. autoclass:: xpersist.prefect.result.XpersistResult
     :members:
     :noindex:
 ```
