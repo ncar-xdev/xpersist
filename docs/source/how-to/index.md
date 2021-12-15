@@ -7,4 +7,5 @@ How to:
 maxdepth: 1
 ---
 install-xpersist.md
+use-xpersist-with-prefect.md
 ```
