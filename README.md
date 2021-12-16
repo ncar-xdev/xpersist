@@ -8,7 +8,7 @@
 
 xpersist provides custom caching utility functions in Python. It is designed to be used in conjunction with analysis packages such as xarray, pandas which provide convenient interfaces for saving and loading data to and from disk.
 
-See [documentation](https://intake-esm.readthedocs.io/en/latest/) for more information.
+See [documentation](https://xpersist.readthedocs.io/en/latest/) for more information.
 
 ## Installation
 
