@@ -73,6 +73,15 @@ assert value == value_from_cache
 xr.testing.assert_equal(ds, ds_from_cache)
 ```
 
+## Inspect the Cache
+
+There are a few other methods that can be used to inspect the cache. For example, the {py:meth}`xpersist.CacheStore.get_artifact` method returns an {py:class}`xpersist.cache.Artifact` object. An artifact object is a Python object that contains metadata about the data stored in the cache.
+
+```{code-cell} ipython3
+artifact = store.get_artifact('my-dataset')
+artifact
+```
+
 ## Delete Data from the Cache
 
 To delete data from the cache, use the {py:meth}`xpersist.CacheStore.delete` method and pass the key of the data to delete.
