@@ -1,4 +1,4 @@
-name: Build and upload xpersist to PyPI
+name: Build distribution
 on:
   release:
     types:
