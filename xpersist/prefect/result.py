@@ -26,7 +26,7 @@ class XpersistResult(Result):
         The keyword arguments to pass to the serializer's `dump` method.
     serializer_load_kwargs : dict
         The keyword arguments to pass to the serializer's `load` method.
-    kwargs: dict
+    kwargs : dict
         Any additional keyword arguments to pass to the `Result` class.
     """
 
@@ -59,7 +59,7 @@ class XpersistResult(Result):
 
         Returns
         -------
-        result: Result
+        result : Result
             a new result instance with the data represented by the location
         """
         new = self.copy()
@@ -86,7 +86,7 @@ class XpersistResult(Result):
 
         Returns
         -------
-        result: Result
+        result : Result
             A new `Result` instance with the location of the written result.
 
         """
