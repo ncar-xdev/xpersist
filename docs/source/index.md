@@ -28,6 +28,7 @@ hidden:
 ---
 
 contributing.md
+changelog.md
 GitHub Repo <https://github.com/NCAR/xpersist>
 GitHub discussions <https://github.com/NCAR/xpersist/discussions>
 
