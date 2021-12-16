@@ -133,7 +133,7 @@ class CacheStore:
     def get_artifact(self, key: str) -> Artifact:
         """Returns the artifact corresponding to the key.
 
-         Parameters
+        Parameters
         ----------
         key : str
             Key to get from the cache store.
