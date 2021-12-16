@@ -15,6 +15,19 @@ from ..cache import CacheStore
 class XpersistResult(Result):
     """
     A result class that is used to store the results of a task in a xpersist Metadata store.
+
+    Parameters
+    ----------
+    cache_store : :py:class:`xpersist.cache.CacheStore`
+        The cache store to use for storing the result.
+    serializer : str
+        The serializer to use for storing the result.
+    serializer_dump_kwargs : dict
+        The keyword arguments to pass to the serializer's `dump` method.
+    serializer_load_kwargs : dict
+        The keyword arguments to pass to the serializer's `load` method.
+    kwargs : dict
+        Any additional keyword arguments to pass to the `Result` class.
     """
 
     cache_store: CacheStore
@@ -37,17 +50,17 @@ class XpersistResult(Result):
 
     def read(self, location: str) -> Result:
         """
-        Reads the result from the metadata store.
+        Reads a result from the cache store and returns the corresponding `Result` instance.
 
         Parameters
         ----------
         location : str
-            The location of the result to read.
+            the location to read from
 
         Returns
         -------
-        Result
-            The result at the given location.
+        result : Result
+            a new result instance with the data represented by the location
         """
         new = self.copy()
         new.location = location
@@ -59,17 +72,26 @@ class XpersistResult(Result):
 
     def write(self, value_: typing.Any, **kwargs: typing.Any) -> Result:
         """
-        Writes the result to the metadata store.
+        Writes the result to a location in the cache store and returns a new `Result`
+        object with the result's location.
 
         Parameters
         ----------
         value_ : typing.Any
-            The value to write to the metadata store.
-        kwargs : typing.Any
-            Additional keyword arguments
+            the value to write; will then be stored as the `value` attribute
+            of the returned `Result` instance
+        kwargs : dict
+            if provided, will be used to format the location template
+            to determine the location to write to
+
+        Returns
+        -------
+        result : Result
+            A new `Result` instance with the location of the written result.
+
         """
 
-        new = self.format(**{})
+        new = self.format(**kwargs)
         new.value = value_
         assert new.location is not None
 
@@ -90,11 +112,17 @@ class XpersistResult(Result):
         Parameters
         ----------
         location : str
-            The location of the result to check.
-        kwargs : typing.Any
-            Additional keyword arguments.
+            Location of the result in the specific result target.
+            Will check whether the provided location exists
+        kwargs : dict
+            string format arguments for `location`
+
+        Returns
+        -------
+        _ : bool
+            whether or not the target result exists
         """
-        return location in self.cache_store
+        return location.format(**kwargs) in self.cache_store
 
 
 # Fixes https://github.com/samuelcolvin/pydantic/issues/704
