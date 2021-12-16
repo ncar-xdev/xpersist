@@ -19,6 +19,7 @@ extensions = [
     'sphinx_copybutton',
     'sphinx_comments',
     'sphinxcontrib.autodoc_pydantic',
+    'sphinx_inline_tabs',
 ]
 
 autodoc_member_order = 'groupwise'

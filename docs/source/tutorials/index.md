@@ -23,7 +23,7 @@ import tempfile
 
 ## Set Cache Location
 
-To use xpersist, we must set the location of the cache. This is done by instatiating a {py:class}`xpersist.CacheStore` class. The cache store points to a POSIX directory or a cloud storage bucket where all cached data will be stored. In this example, we will use a local directory.
+To use xpersist, we must set the location of the cache. This is done by instatiating a {py:class}`xpersist.cache.CacheStore` class. The cache store points to a POSIX directory or a cloud storage bucket where all cached data will be stored. In this example, we will use a local directory.
 
 ```{code-cell} ipython3
 store = xpersist.CacheStore(f'{tempfile.gettempdir()}/my-cache')
@@ -48,13 +48,13 @@ _ = store.put('my-dataset', ds, serializer='xarray.zarr', dump_kwargs={'mode': '
 
 ## Get Data from the Cache
 
-To find the list of keys in the cache, use the {py:meth}`xpersist.CacheStore.keys` method.
+To find the list of keys in the cache, use the {py:meth}`xpersist.cache.CacheStore.keys` method.
 
 ```{code-cell} ipython3
 store.keys()
 ```
 
-To retrieve the data from the cache, use the {py:meth}`xpersist.CacheStore.get` method. The `get` method returns a deserialized object. Let's retrieve our dataset and the dictionary values we previously cached.
+To retrieve the data from the cache, use the {py:meth}`xpersist.cache.CacheStore.get` method. The `get` method returns a deserialized object. Let's retrieve our dataset and the dictionary values we previously cached.
 
 ```{code-cell} ipython3
 value_from_cache = store.get('foo')
@@ -75,7 +75,7 @@ xr.testing.assert_equal(ds, ds_from_cache)
 
 ## Inspect the Cache
 
-There are a few other methods that can be used to inspect the cache. For example, the {py:meth}`xpersist.CacheStore.get_artifact` method returns an {py:class}`xpersist.cache.Artifact` object. An artifact object is a Python object that contains metadata about the data stored in the cache.
+There are a few other methods that can be used to inspect the cache. For example, the {py:meth}`xpersist.cache.CacheStore.get_artifact` method returns an {py:class}`xpersist.cache.Artifact` object. An artifact object is a Python object that contains metadata about the data stored in the cache.
 
 ```{code-cell} ipython3
 artifact = store.get_artifact('my-dataset')
@@ -84,7 +84,7 @@ artifact
 
 ## Delete Data from the Cache
 
-To delete data from the cache, use the {py:meth}`xpersist.CacheStore.delete` method and pass the key of the data to delete.
+To delete data from the cache, use the {py:meth}`xpersist.cache.CacheStore.delete` method and pass the key of the data to delete.
 
 ```{code-cell} ipython3
 store.delete('foo')

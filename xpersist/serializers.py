@@ -1,6 +1,7 @@
 import functools
 import typing
 
+import joblib as _joblib
 import pydantic
 import xarray as xr
 import xcollection as xc
@@ -8,8 +9,9 @@ import xcollection as xc
 from .registry import registry
 
 
-@pydantic.dataclasses.dataclass
-class Serializer:
+class Serializer(pydantic.BaseModel):
+    """Pydantic model for defining a serializer."""
+
     name: str
     load: typing.Callable
     dump: typing.Callable
@@ -17,24 +19,22 @@ class Serializer:
 
 @registry.serializers.register('xarray.zarr')
 def xarray_zarr() -> Serializer:
-    return Serializer('xarray.zarr', xr.open_zarr, xr.backends.api.to_zarr)
+    return Serializer(name='xarray.zarr', load=xr.open_zarr, dump=xr.backends.api.to_zarr)
 
 
 @registry.serializers.register('xarray.netcdf')
 def xarray_netcdf() -> Serializer:
-    return Serializer('xarray.netcdf', xr.open_dataset, xr.backends.api.to_netcdf)
+    return Serializer(name='xarray.netcdf', load=xr.open_dataset, dump=xr.backends.api.to_netcdf)
 
 
 @registry.serializers.register('xcollection')
 def xcollection() -> Serializer:
-    return Serializer('xcollection', xc.open_collection, xc.Collection.to_zarr)
+    return Serializer(name='xcollection', load=xc.open_collection, dump=xc.Collection.to_zarr)
 
 
 @registry.serializers.register('joblib')
 def joblib() -> Serializer:
-    import joblib
-
-    return Serializer('joblib', joblib.load, joblib.dump)
+    return Serializer(name='joblib', load=_joblib.load, dump=_joblib.dump)
 
 
 @functools.singledispatch
