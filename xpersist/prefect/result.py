@@ -13,8 +13,7 @@ from ..cache import CacheStore
 
 @pydantic.dataclasses.dataclass
 class XpersistResult(Result):
-    """
-    A result class that is used to store the results of a task in a xpersist Metadata store.
+    """A result class used to store the results of a task in a xpersist cache store.
 
     Parameters
     ----------
@@ -49,8 +48,7 @@ class XpersistResult(Result):
         return f"prefect-result-{slugify(pendulum.now('utc').isoformat())}"
 
     def read(self, location: str) -> Result:
-        """
-        Reads a result from the cache store and returns the corresponding `Result` instance.
+        """Reads a result from the cache store and returns the corresponding `Result` instance.
 
         Parameters
         ----------
@@ -71,8 +69,7 @@ class XpersistResult(Result):
         return new
 
     def write(self, value_: typing.Any, **kwargs: typing.Any) -> Result:
-        """
-        Writes the result to a location in the cache store and returns a new `Result`
+        """Writes the result to a location in the cache store and returns a new `Result`
         object with the result's location.
 
         Parameters
@@ -95,18 +92,43 @@ class XpersistResult(Result):
         new.value = value_
         assert new.location is not None
 
+        relevant_context_keys = sorted(
+            {
+                'today',
+                'yesterday',
+                'tomorrow',
+                'flow_name',
+                'task_name',
+                'map_index',
+                'task_full_name',
+                'task_slug',
+                'task_tags',
+                'task_run_name',
+                'flow_id',
+                'flow_run_id',
+                'flow_run_version',
+                'flow_run_name',
+                'task_id',
+                'task_run_id',
+                'task_run_version',
+            }
+        )
+        additional_metadata = {key: kwargs.get(key, '') for key in relevant_context_keys}
+
         self.logger.debug('Starting to upload result to {}...'.format(new.location))
         self.cache_store.put(
             key=new.location,
             value=new.value,
             serializer=self.serializer,
             dump_kwargs=new.serializer_dump_kwargs,
+            additional_metadata=additional_metadata,
         )
         self.logger.debug('Finished uploading result to {}.'.format(new.location))
         return new
 
     def exists(self, location: str, **kwargs: typing.Any) -> bool:
-        """Checks whether the target result exists in the metadata store.
+        """Checks whether the target result exists in the cache store.
+
         Does not validate whether the result is `valid`, only that it is present.
 
         Parameters

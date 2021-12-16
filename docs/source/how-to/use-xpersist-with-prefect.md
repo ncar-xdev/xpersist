@@ -34,6 +34,7 @@ prefect.context.to_dict()['config']['flows']['checkpointing']
 
 ```{code-cell} ipython3
 store = CacheStore(f'{tempfile.gettempdir()}/my-cache')
+store
 ```
 
 ## Set Prefect Flow
@@ -77,10 +78,12 @@ Now we can run the flow. Notice that the flow runs for five seconds and the resu
 flow.run()
 ```
 
-Confirm that the result is cached using the specified target name/key ('bar')
+Let's retrieve the artifact metadata to confirm that the result was properly cached:
 
 ```{code-cell} ipython3
-store.keys()
+import pprint
+artifact = store.get_artifact("bar.zarr")
+pprint.pprint(artifact.dict())
 ```
 
 Running the flow again will retrieve the result from the cache instead of running the task again:

@@ -18,6 +18,7 @@ class Artifact(pydantic.BaseModel):
     serializer: str
     load_kwargs: typing.Optional[typing.Dict] = pydantic.Field(default_factory=dict)
     dump_kwargs: typing.Optional[typing.Dict] = pydantic.Field(default_factory=dict)
+    additional_metadata: typing.Optional[typing.Dict] = pydantic.Field(default_factory=dict)
     created_at: typing.Optional[datetime.datetime] = pydantic.Field(
         default_factory=datetime.datetime.utcnow
     )
@@ -216,7 +217,7 @@ class CacheStore:
         value: typing.Any,
         serializer: str = 'auto',
         dump_kwargs: typing.Dict[typing.Any, typing.Any] = None,
-        custom_fields: typing.Dict[typing.Any, typing.Any] = None,
+        additional_metadata: typing.Dict[typing.Any, typing.Any] = None,
     ) -> Artifact:
         """Records and serializes key with its corresponding value in the cache store.
 
@@ -237,7 +238,7 @@ class CacheStore:
             You can also register your own serializer via the @xpersist.registry.serializers.register decorator.
         dump_kwargs : dict
             Additional keyword arguments to pass to the serializer when dumping artifact to the cache store.
-        custom_fields : dict
+        additional_metadata : dict
             A dict with types that serialize to json. These fields can be used for searching artifacts in the metadata store.
 
         Returns
@@ -257,7 +258,7 @@ class CacheStore:
 
         """
         dump_kwargs = dump_kwargs or {}
-        custom_fields = custom_fields or {}
+        additional_metadata = additional_metadata or {}
         if not self.readonly:
             method = getattr(self, f'_put_{self.on_duplicate_key.value}')
             serializer_name = pick_serializer(value) if serializer == 'auto' else serializer
@@ -265,12 +266,10 @@ class CacheStore:
                 key=key,
                 serializer=serializer_name,
                 dump_kwargs=dump_kwargs,
-                custom_fields=custom_fields,
+                additional_metadata=additional_metadata,
             )
             artifact._value = value
             method(artifact)
-            with self.fs.open(self._artifact_meta_full_path(key), 'w') as fobj:
-                fobj.write(artifact.json(indent=2))
             return artifact._value
 
     def _put_skip(self, artifact: Artifact) -> None:
@@ -283,3 +282,6 @@ class CacheStore:
             serializer.dump(
                 artifact._value, self._construct_item_path(artifact.key), **artifact.dump_kwargs
             )
+
+            with self.fs.open(self._artifact_meta_full_path(artifact.key), 'w') as fobj:
+                fobj.write(artifact.json(indent=2))
