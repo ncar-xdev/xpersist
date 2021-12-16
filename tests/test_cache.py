@@ -3,6 +3,7 @@ import pytest
 import xarray as xr
 
 from xpersist import CacheStore
+from xpersist.cache import Artifact
 
 
 @pytest.mark.parametrize('readonly', [True, False])
@@ -27,6 +28,7 @@ def test_put_and_get(tmp_path, key, data, serializer):
     store = CacheStore(str(tmp_path))
     store.put(key=key, value=data, serializer=serializer)
     assert key in store.keys()
+    assert isinstance(store.get_artifact(key), Artifact)
     results = store[key]
     assert results == data
 

@@ -11,11 +11,13 @@ For more details and examples, refer to the relevant chapters in the main part o
 
 ```{eval-rst}
 .. autosummary::
-    xpersist.CacheStore
+    xpersist.cache.CacheStore
+    xpersist.cache.Artifact
 
-.. autoclass:: xpersist.CacheStore
+.. autoclass:: xpersist.cache.CacheStore
     :members:
-    :noindex:
+
+.. autopydantic_model:: xpersist.cache.Artifact
 ```
 
 ## Registry
@@ -26,7 +28,6 @@ For more details and examples, refer to the relevant chapters in the main part o
 
 .. autoclass:: xpersist.registry.registry
     :members:
-    :noindex:
 ```
 
 ## Prefect Extensions
@@ -37,5 +38,4 @@ For more details and examples, refer to the relevant chapters in the main part o
 
 .. autoclass:: xpersist.prefect.result.XpersistResult
     :members:
-    :noindex:
 ```
