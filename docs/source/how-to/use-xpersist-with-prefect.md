@@ -42,7 +42,7 @@ To enable persisting output of a task in xpersist's cache store, we need to defi
 
 ```{code-cell} ipython3
 @task(
-    target="bar",
+    target="bar.zarr",
     result=XpersistResult(
         store, serializer="xarray.zarr", serializer_dump_kwargs={"mode": "w"}
     ),
@@ -91,3 +91,38 @@ flow.run()
 ```
 
 Notice that the flow takes milliseconds to run instead of the original five seconds.
+
+```{note}
+Note that targets can optionally be templated, using [values found in prefect.context](https://docs.prefect.io/api/latest/utilities/context.html). For example, the following target specification will store data based on (1) the day of the week the flow is run on, (2) the name of the flow, and (3) the name of the task:
+```
+
+```{code-cell} ipython3
+@task(
+    target="{date:%A}-{flow_name}-{task_name}.zarr",
+    result=XpersistResult(
+        store, serializer="xarray.zarr", serializer_dump_kwargs={"mode": "w"}
+    ),
+)
+def foo_task():
+    ds = xr.DataArray(range(10), dims="x", name="bar").to_dataset()
+    time.sleep(5)
+    return ds
+
+with Flow("sample_flow") as flow:
+    ds = foo_task()
+
+```
+
+```{code-cell} ipython3
+%%time
+flow.run()
+```
+
+```{code-cell} ipython3
+%%time
+flow.run()
+```
+
+```{code-cell} ipython3
+store.keys()
+```
