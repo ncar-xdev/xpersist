@@ -7,7 +7,7 @@ from prefect import Flow, task
 from prefect.executors import DaskExecutor, LocalExecutor
 
 from xpersist import CacheStore
-from xpersist.prefect.result import xpersistResult
+from xpersist.prefect.result import XpersistResult
 
 ds = xr.tutorial.open_dataset('air_temperature').isel(time=0)
 
@@ -22,7 +22,7 @@ ds = xr.tutorial.open_dataset('air_temperature').isel(time=0)
     ],
 )
 def test_result(data, serializer):
-    r = xpersistResult(
+    r = XpersistResult(
         CacheStore(),
         serializer=serializer,
     )
@@ -42,7 +42,7 @@ def test_result(data, serializer):
 )
 def test_result_flow(executor):
     os.environ['PREFECT__FLOWS__CHECKPOINTING'] = 'True'
-    r = xpersistResult(
+    r = XpersistResult(
         CacheStore(),
         serializer='xarray.netcdf',
     )

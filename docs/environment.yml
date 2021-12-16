@@ -12,8 +12,10 @@ dependencies:
   - myst-nb
   - netcdf4
   - pip
+  - pooch
   - prefect
   - pydantic
+  - python-graphviz
   - python=3.9
   - sphinx-autobuild
   - sphinx-comments

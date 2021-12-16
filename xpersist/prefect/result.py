@@ -12,7 +12,7 @@ from ..cache import CacheStore
 
 
 @pydantic.dataclasses.dataclass
-class xpersistResult(Result):
+class XpersistResult(Result):
     """
     A result class that is used to store the results of a task in a xpersist Metadata store.
     """
@@ -98,4 +98,4 @@ class xpersistResult(Result):
 
 
 # Fixes https://github.com/samuelcolvin/pydantic/issues/704
-xpersistResult.__pydantic_model__.update_forward_refs()
+XpersistResult.__pydantic_model__.update_forward_refs()
