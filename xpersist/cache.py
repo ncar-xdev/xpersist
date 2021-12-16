@@ -12,6 +12,8 @@ from .serializers import pick_serializer
 
 
 class Artifact(pydantic.BaseModel):
+    """A pydantic model for representing an artifact in the cache."""
+
     key: str
     serializer: str
     load_kwargs: typing.Optional[typing.Dict] = pydantic.Field(default_factory=dict)
@@ -34,26 +36,34 @@ class DuplicateKeyEnum(str, enum.Enum):
 
 @pydantic.dataclasses.dataclass
 class CacheStore:
-    """Implements caching functionality. Support backends (in-memory, local, s3fs, etc...) scheme registered with fsspec.
+    """Implements caching functionality. Support fsspec backends (local, s3fs, etc...).
 
-    Some backends may require other dependencies. For example to work with S3 cache store, s3fs is required.
+    Some backends may require other dependencies. For example to work with S3 cache store,
+    s3fs is required.
 
     Parameters
     ----------
     path : str
-        the path to the cache store
+        The path to the cache store. This can be a local directory or a cloud storage bucket.
+        By default, the path is set to the temporary local directory.
     storage_options : dict
-        the storage options for the cache store
+        fsspec parameters passed to the backend file-system such as Google Cloud Storage,
+        Amazon Web Service S3.
     readonly : bool
-        if True, the cache store is readonly
+        if True, the cache store is readonly. If False, the cache store is writable.
     on_duplicate_key : DuplicateKeyEnum
-        the behavior when a key is duplicated in the cache store
+        The behavior when a key is duplicated in the cache store. Valid options are:
+
+        - 'skip' (default): do nothing
+        - 'overwrite': overwrite the existing artifact
+        - 'check_collision': check if the key is already in the cache store and raise an error
+        - 'raise_error': raise an error if the key is already in the cache store
     """
 
     path: str = tempfile.gettempdir()
     readonly: bool = False
     on_duplicate_key: DuplicateKeyEnum = 'skip'
-    storage_options: typing.Dict = None
+    storage_options: typing.Dict[typing.Any, typing.Any] = None
 
     def __post_init_post_parse__(self):
         self.storage_options = {} if self.storage_options is None else self.storage_options
@@ -120,6 +130,37 @@ class CacheStore:
         self.delete(key, dry_run=False)
 
     @pydantic.validate_arguments
+    def get_artifact(self, key: str) -> Artifact:
+        """Returns the artifact corresponding to the key.
+
+         Parameters
+        ----------
+        key : str
+            Key to get from the cache store.
+
+        Returns
+        -------
+        artifact: Artifact
+            The artifact corresponding to the key.
+
+        Raises
+        ------
+        KeyError
+            If the key is not in the cache store.
+
+        """
+        metadata_file = self._artifact_meta_relative_path(key)
+        message = f'{key} not found in cache store: {self._metadata_store_path}'
+        if key not in self:
+            raise KeyError(message)
+        try:
+            return Artifact(**json.loads(self.mapper[metadata_file]))
+        except Exception as exc:
+            raise KeyError(
+                f'Unable to load artifact sidecar file {metadata_file} for key: {key}'
+            ) from exc
+
+    @pydantic.validate_arguments
     def get(
         self,
         key: str,
@@ -159,17 +200,7 @@ class CacheStore:
         [1, 2, 3]
         """
 
-        metadata_file = self._artifact_meta_relative_path(key)
-        message = f'{key} not found in cache store: {self._metadata_store_path}'
-        if key not in self:
-            raise KeyError(message)
-        try:
-            artifact = Artifact(**json.loads(self.mapper[metadata_file]))
-        except Exception as exc:
-            raise KeyError(
-                f'Unable to load artifact sidecar file {metadata_file} for key: {key}'
-            ) from exc
-
+        artifact = self.get_artifact(key)
         try:
             serializer_name = serializer or artifact.serializer
             load_kwargs = load_kwargs or artifact.load_kwargs
