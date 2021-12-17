@@ -21,6 +21,7 @@ dependencies:
   - pytest-sugar
   - pytest-xdist
   - xarray
+  - xcollection
   - zarr>=2.5
   - pip:
       - -r ../requirements.txt
