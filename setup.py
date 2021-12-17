@@ -4,7 +4,7 @@
 """The setup script."""
 
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md') as f:
     long_description = f.read()
@@ -35,7 +35,7 @@ setup(
     long_description_content_type='text/markdown',
     long_description=long_description,
     name='xpersist',
-    packages=['xpersist'],
+    packages=find_packages(),
     url='https://github.com/NCAR/xpersist',
     project_urls={
         'Documentation': 'https://github.com/NCAR/xpersist',
