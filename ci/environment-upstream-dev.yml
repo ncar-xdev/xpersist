@@ -24,5 +24,6 @@ dependencies:
   - zarr>=2.5
   - pip:
       - git+https://github.com/pydata/xarray.git
+      - git+https://github.com/NCAR/xcollection.git
       - -r ../requirements.txt
       - -e ..
