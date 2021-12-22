@@ -21,7 +21,7 @@ import xarray as xr
 import tempfile
 ```
 
-## Set Cache Location
+## Set cache location
 
 To use xpersist, we must set the location of the cache. This is done by instatiating a {py:class}`xpersist.cache.CacheStore` class. The cache store points to a POSIX directory or a cloud storage bucket where all cached data will be stored. In this example, we will use a local directory.
 
@@ -30,7 +30,7 @@ store = xpersist.CacheStore(f'{tempfile.gettempdir()}/my-cache')
 store
 ```
 
-## Put Data in the Cache
+## Put data in the Cache
 
 Now we can use the `store` object to cache some data. The data can be any Python object.
 
@@ -39,14 +39,23 @@ ds = xr.tutorial.open_dataset('rasm').isel(time=slice(0, 2))
 value = {'bar': 'baz'}
 ```
 
-By default, xpersist will some heuristics to determine the right serializer to use. We can override this by specifying the serializer in the `serializer` argument.
+### Get the full list of available serializers
+
+By default, xpersist uses some heuristics based on an object's type to determine the right serializer to use. Instead of relying on xpersist's heuristics, we can specify the name of the serializer in the `serializer` argument. To get the list of available serializers, we can use `xpersist.registry.serializers.get_all()`. This will return a dictionary of serializer names and their associated {py:class}`xpersist.serializers.Serializer` instances.
+
+```{code-cell} ipython3
+serializers = xpersist.registry.serializers.get_all().keys()
+[serializer for serializer in serializers]
+```
+
+Once we know the name of the serializer we want to use, we can specify it in the `serializer` argument.
 
 ```{code-cell} ipython3
 _ = store.put('foo', value)
 _ = store.put('my-dataset', ds, serializer='xarray.zarr', dump_kwargs={'mode': 'w'})
 ```
 
-## Get Data from the Cache
+## Get data from the Cache
 
 To find the list of keys in the cache, use the {py:meth}`xpersist.cache.CacheStore.keys` method.
 
@@ -73,7 +82,7 @@ assert value == value_from_cache
 xr.testing.assert_equal(ds, ds_from_cache)
 ```
 
-## Inspect the Cache
+## Inspect the cache
 
 There are a few other methods that can be used to inspect the cache. For example, the {py:meth}`xpersist.cache.CacheStore.get_artifact` method returns an {py:class}`xpersist.cache.Artifact` object. An artifact object is a Python object that contains metadata about the data stored in the cache.
 
@@ -82,7 +91,7 @@ artifact = store.get_artifact('my-dataset')
 artifact
 ```
 
-## Delete Data from the Cache
+## Delete data from the cache
 
 To delete data from the cache, use the {py:meth}`xpersist.cache.CacheStore.delete` method and pass the key of the data to delete.
 
