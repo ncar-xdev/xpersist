@@ -2,6 +2,7 @@ import functools
 import typing
 
 import joblib as _joblib
+import pandas as pd
 import pydantic
 import xarray as xr
 import xcollection as xc
@@ -37,6 +38,16 @@ def joblib() -> Serializer:
     return Serializer(name='joblib', load=_joblib.load, dump=_joblib.dump)
 
 
+@registry.serializers.register('pandas.csv')
+def pandas_csv() -> Serializer:
+    return Serializer(name='pandas.csv', load=pd.read_csv, dump=pd.DataFrame.to_csv)
+
+
+@registry.serializers.register('pandas.parquet')
+def pandas_parquet() -> Serializer:
+    return Serializer(name='pandas.parquet', load=pd.read_parquet, dump=pd.DataFrame.to_parquet)
+
+
 @functools.singledispatch
 def pick_serializer(obj) -> str:
     """Returns the id of the appropriate serializer
@@ -67,3 +78,8 @@ def _(obj):
 @pick_serializer.register(xc.Collection)
 def _(obj):
     return registry.serializers.get('xcollection')().name
+
+
+@pick_serializer.register(pd.DataFrame)
+def _(obj):
+    return registry.serializers.get('pandas.csv')().name
