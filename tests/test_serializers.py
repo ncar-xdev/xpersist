@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 import xarray as xr
 import xcollection as xc
@@ -21,6 +22,7 @@ import xpersist
             ),
             'xcollection',
         ),
+        (pd.DataFrame({'foo': [1, 2]}), 'pandas.csv'),
     ],
 )
 def test_default_serializer(value, expected_serializer):

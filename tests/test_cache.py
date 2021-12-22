@@ -1,4 +1,5 @@
 import fsspec
+import pandas as pd
 import pytest
 import xarray as xr
 
@@ -22,6 +23,7 @@ def test_initialization(tmp_path, readonly):
         ('foo', [1, 3, 4], 'auto'),
         ('test.nc', xr.DataArray([1, 2]).to_dataset(name='sst'), 'xarray.netcdf'),
         ('my_dataset.zarr', xr.DataArray([1, 2]).to_dataset(name='sst'), 'xarray.zarr'),
+        ('foo.parquet', pd.DataFrame({'foo': [1, 2]}), 'pandas.parquet'),
     ],
 )
 def test_put_and_get(tmp_path, key, data, serializer):
@@ -30,7 +32,12 @@ def test_put_and_get(tmp_path, key, data, serializer):
     assert key in store.keys()
     assert isinstance(store.get_artifact(key), Artifact)
     results = store[key]
-    assert results == data
+    if isinstance(data, (xr.Dataset, xr.DataArray)):
+        xr.testing.assert_equal(results, data)
+    elif isinstance(data, pd.DataFrame):
+        pd.testing.assert_frame_equal(results, data)
+    else:
+        assert results == data
 
 
 @pytest.mark.parametrize(
@@ -39,6 +46,7 @@ def test_put_and_get(tmp_path, key, data, serializer):
         ('bar', 'my_data', 'joblib'),
         ('foo', [1, 3, 4], 'auto'),
         ('test.nc', xr.DataArray([1, 2]).to_dataset(name='sst'), 'xarray.netcdf'),
+        ('foo.parquet', pd.DataFrame({'foo': [1, 2]}), 'pandas.parquet'),
     ],
 )
 def test_delete(tmp_path, key, data, serializer):
