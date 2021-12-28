@@ -16,6 +16,24 @@ def test_initialization(tmp_path, readonly):
     assert store.readonly == readonly
 
 
+@pytest.mark.parametrize('on_duplicate_key', ['raise_error', 'overwrite', 'skip'])
+def test_on_duplicate_key(tmp_path, on_duplicate_key):
+    store = CacheStore(str(tmp_path), on_duplicate_key=on_duplicate_key)
+    key, data, new_data = 'foo', 'my_data', 'hello'
+    store.put(key=key, value=data)
+
+    if on_duplicate_key == 'raise_error':
+        with pytest.raises(ValueError):
+            store.put(key=key, value=new_data)
+    else:
+        store.put(key=key, value=new_data)
+
+    if on_duplicate_key == 'overwrite':
+        assert store.get(key) == new_data
+    else:
+        assert store.get(key) == data
+
+
 @pytest.mark.parametrize(
     'key, data, serializer',
     [

@@ -31,13 +31,12 @@ class Artifact(pydantic.BaseModel):
 class DuplicateKeyEnum(str, enum.Enum):
     skip = 'skip'
     overwrite = 'overwrite'
-    check_collision = 'check_collision'
     raise_error = 'raise_error'
 
 
 @pydantic.dataclasses.dataclass
 class CacheStore:
-    """Implements caching functionality. Support fsspec backends (local, s3fs, etc...).
+    """Implements caching functionality using fsspec backends (local, s3fs, gcsfs, etc...).
 
     Some backends may require other dependencies. For example to work with S3 cache store,
     s3fs is required.
@@ -57,7 +56,6 @@ class CacheStore:
 
         - 'skip' (default): do nothing
         - 'overwrite': overwrite the existing artifact
-        - 'check_collision': check if the key is already in the cache store and raise an error
         - 'raise_error': raise an error if the key is already in the cache store
     """
 
@@ -69,9 +67,8 @@ class CacheStore:
     def __post_init_post_parse__(self):
         self.storage_options = {} if self.storage_options is None else self.storage_options
         self.mapper = fsspec.get_mapper(self.path, **self.storage_options)
-        self.fs = self.mapper.fs
-        self.raw_path = self.fs._strip_protocol(self.path)
-        self.protocol = self.fs.protocol
+        self.raw_path = self.mapper.fs._strip_protocol(self.path)
+        self.protocol = self.mapper.fs.protocol
         self._ensure_dir(self.raw_path)
         self._suffix = '.artifact.json'
         self._metadata_store_prefix = 'xpersist_metadata_store'
@@ -79,8 +76,8 @@ class CacheStore:
         self._ensure_dir(self._metadata_store_path)
 
     def _ensure_dir(self, key: str) -> None:
-        if not self.fs.exists(key):
-            self.fs.makedirs(key, exist_ok=True)
+        if not self.mapper.fs.exists(key):
+            self.mapper.fs.makedirs(key, exist_ok=True)
 
     def _construct_item_path(self, key) -> str:
         return f'{self.path}/{key}'
@@ -97,7 +94,7 @@ class CacheStore:
 
     def keys(self) -> typing.List[str]:
         """Returns a list of keys in the cache store."""
-        keys = self.fs.ls(self._metadata_store_path)
+        keys = self.mapper.fs.ls(self._metadata_store_path)
         return [
             key.split(f'{self._metadata_store_prefix}/')[-1].split(self._suffix)[0] for key in keys
         ]
@@ -283,16 +280,24 @@ class CacheStore:
             method(artifact)
             return artifact._value
 
+    def _put_raise_error(self, artifact: Artifact) -> None:
+        """Raises an error if the key is already in the cache store."""
+        if artifact.key in self:
+            raise ValueError(f'Key {artifact.key} already in cache store')
+        else:
+            self._put_overwrite(artifact)
+
     def _put_skip(self, artifact: Artifact) -> None:
-        if self._artifact_meta_relative_path(artifact.key) not in self:
+        """Does nothing if the key is already in the cache store."""
+        if artifact.key not in self:
             self._put_overwrite(artifact)
 
     def _put_overwrite(self, artifact: Artifact) -> None:
         serializer = registry.serializers.get(artifact.serializer)()
-        with self.fs.transaction:
+        with self.mapper.fs.transaction:
             serializer.dump(
                 artifact._value, self._construct_item_path(artifact.key), **artifact.dump_kwargs
             )
 
-            with self.fs.open(self._artifact_meta_full_path(artifact.key), 'w') as fobj:
+            with self.mapper.fs.open(self._artifact_meta_full_path(artifact.key), 'w') as fobj:
                 fobj.write(artifact.json(indent=2))
