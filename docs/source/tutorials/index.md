@@ -52,7 +52,7 @@ Once we know the name of the serializer we want to use, we can specify it in the
 
 ```{code-cell} ipython3
 _ = store.put('foo', value)
-_ = store.put('my-dataset', ds, serializer='xarray.zarr', dump_kwargs={'mode': 'w'})
+_ = store.put('my-dataset.zarr', ds, serializer='xarray.zarr', dump_kwargs={'mode': 'w'})
 ```
 
 ## Get data from the Cache
@@ -71,7 +71,7 @@ print(value_from_cache)
 ```
 
 ```{code-cell} ipython3
-ds_from_cache = store.get('my-dataset')
+ds_from_cache = store.get('my-dataset.zarr')
 print(ds_from_cache)
 ```
 
@@ -87,7 +87,7 @@ xr.testing.assert_equal(ds, ds_from_cache)
 There are a few other methods that can be used to inspect the cache. For example, the {py:meth}`xpersist.cache.CacheStore.get_artifact` method returns an {py:class}`xpersist.cache.Artifact` object. An artifact object is a Python object that contains metadata about the data stored in the cache.
 
 ```{code-cell} ipython3
-artifact = store.get_artifact('my-dataset')
+artifact = store.get_artifact('my-dataset.zarr')
 artifact
 ```
 
@@ -96,17 +96,23 @@ artifact
 To delete data from the cache, use the {py:meth}`xpersist.cache.CacheStore.delete` method and pass the key of the data to delete.
 
 ```{code-cell} ipython3
-store.delete('foo')
+store.delete('my-dataset.zarr')
 ```
 
 By default, the `delete` method will run in dry-run mode. This means that it will not actually delete the data from the cache. To actually delete the data, use the `dry_run=False` argument.
 
 ```{code-cell} ipython3
-store.delete('foo', dry_run=False)
+store.delete('my-dataset.zarr', dry_run=False)
 ```
 
 To confirm that the data was deleted, we can check the available keys in the cache:
 
 ```{code-cell} ipython3
 store.keys()
+```
+
+Trying to delete a key that does not exist in the cache will raise an error.
+
+```{code-cell} ipython3
+store.delete('my-dataset.zarr', dry_run=False)
 ```

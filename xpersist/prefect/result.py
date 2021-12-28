@@ -20,7 +20,13 @@ class XpersistResult(Result):
     cache_store : :py:class:`xpersist.cache.CacheStore`
         The cache store to use for storing the result.
     serializer : str
-        The serializer to use for storing the result.
+        The serializer to use for storing the result. Valid options are:
+
+        - 'auto' (default): automatically chooses the serializer based on the type of the value
+        - 'xarray.netcdf': requires xarray and netCDF4
+        - 'xarray.zarr': requires xarray and zarr
+        - 'pandas.csv' : requires pandas
+        - 'pandas.parquet': requires pandas and pyarrow or fastparquet
     serializer_dump_kwargs : dict
         The keyword arguments to pass to the serializer's `dump` method.
     serializer_load_kwargs : dict
