@@ -112,11 +112,18 @@ class CacheStore:
         dry_run : bool
             If True, the key is not deleted from the cache store. This is useful for debugging.
         """
-        keys = [key, self._artifact_meta_relative_path(key)]
+
+        if key not in self:
+            raise KeyError(f'Key `{key}` not found in cache store.')
+        paths = [self._artifact_meta_full_path(key), self._construct_item_path(key)]
         if not dry_run:
-            self.mapper.delitems(keys)
+            for path in paths:
+                self.mapper.fs.delete(path, recursive=True)
         else:
-            print(f'DRY RUN: would delete items with keys: {repr(keys)}')
+            print('DRY RUN: would delete items with the following paths:\n')
+            for path in paths:
+                print(f'* {path}')
+            print('\nTo delete these items, call `delete(key, dry_run=False)`')
 
     def __getitem__(self, key: str) -> typing.Any:
         """Returns the artifact corresponding to the key."""
@@ -181,6 +188,8 @@ class CacheStore:
             - 'auto' (default): automatically choose the serializer based on the type of the value
             - 'xarray.netcdf': requires xarray and netCDF4
             - 'xarray.zarr': requires xarray and zarr
+            - 'pandas.csv' : requires pandas
+            - 'pandas.parquet': requires pandas and pyarrow or fastparquet
 
             You can also register your own serializer via the @xpersist.registry.serializers.register decorator.
         load_kwargs : dict
@@ -234,6 +243,8 @@ class CacheStore:
             - 'auto' (default): automatically choose the serializer based on the type of the value
             - 'xarray.netcdf': requires xarray and netCDF4
             - 'xarray.zarr': requires xarray and zarr
+            - 'pandas.csv' : requires pandas
+            - 'pandas.parquet': requires pandas and pyarrow or fastparquet
 
             You can also register your own serializer via the @xpersist.registry.serializers.register decorator.
         dump_kwargs : dict
