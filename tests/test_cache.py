@@ -46,6 +46,7 @@ def test_put_and_get(tmp_path, key, data, serializer):
         ('bar', 'my_data', 'joblib'),
         ('foo', [1, 3, 4], 'auto'),
         ('test.nc', xr.DataArray([1, 2]).to_dataset(name='sst'), 'xarray.netcdf'),
+        ('test.zarr', xr.DataArray([1, 2]).to_dataset(name='sst'), 'xarray.zarr'),
         ('foo.parquet', pd.DataFrame({'foo': [1, 2]}), 'pandas.parquet'),
     ],
 )
@@ -56,3 +57,9 @@ def test_delete(tmp_path, key, data, serializer):
     store.delete(key=key, dry_run=True)
     del store[key]
     assert key not in store.keys()
+
+
+def test_delete_error(tmp_path):
+    store = CacheStore(str(tmp_path))
+    with pytest.raises(KeyError):
+        store.delete(key='foo', dry_run=False)
