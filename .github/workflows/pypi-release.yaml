@@ -8,7 +8,7 @@ on:
 jobs:
   build-artifacts:
     runs-on: ubuntu-latest
-    if: github.repository == 'NCAR/xpersist'
+    if: github.repository == 'ncar-xdev/xpersist'
     steps:
       - uses: actions/checkout@v2
         with:

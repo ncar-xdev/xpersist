@@ -26,7 +26,7 @@ xpersist can be installed in three ways:
 
     .. code:: bash
 
-        $ git clone https://github.com/NCAR/xpersist
+        $ git clone https://github.com/ncar-xdev/xpersist
         $ cd xpersist
         $ python -m pip install -e .
 
