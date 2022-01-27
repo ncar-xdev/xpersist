@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: python-${{ matrix.python-version }}
-    if: github.repository == 'NCAR/xpersist'
+    if: github.repository == 'ncar-xdev/xpersist'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -54,7 +54,7 @@ jobs:
   upstream-dev:
     name: upstream-dev
     runs-on: ubuntu-latest
-    if: github.repository == 'NCAR/xpersist'
+    if: github.repository == 'ncar-xdev/xpersist'
     defaults:
       run:
         shell: bash -l {0}
