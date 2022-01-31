@@ -5,6 +5,10 @@ on:
     - cron: '0 0 * * *' # Daily “At 00:00” UTC
   workflow_dispatch: # allows you to trigger the workflow run manually
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   upstream-dev:
     name: upstream-dev
@@ -23,7 +27,7 @@ jobs:
         with:
           channels: conda-forge,nodefaults
           channel-priority: strict
-          activate-environment: xdev-project-dev
+          activate-environment: xpersist-dev
           auto-update-conda: false
           python-version: ${{ matrix.python-version }}
           environment-file: ci/upstream-dev-environment.yml
@@ -31,7 +35,7 @@ jobs:
           use-mamba: true
           miniforge-variant: Mambaforge
 
-      - name: Install xdev-project
+      - name: Install xpersist
         id: install
         run: |
           python -m pip install -e . --no-deps --force-reinstall
@@ -46,7 +50,6 @@ jobs:
         if: |
           always()
           && (steps.conda.outcome != 'success' || steps.install.outcome != 'success' || steps.install.outcome != 'success')
-
         uses: actions/github-script@v5
         with:
           script: |
