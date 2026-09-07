@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # flake8: noqa
-""" Top-level module for xpersist. """
+"""Top-level module for xpersist."""
+
 from pkg_resources import DistributionNotFound, get_distribution
 
 from .cache import CacheStore
