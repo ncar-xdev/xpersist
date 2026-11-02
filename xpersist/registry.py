@@ -15,12 +15,10 @@ _DIn = typing.TypeVar('_DIn')
 
 
 class Decorator(Protocol):
-    def __call__(self, name: str) -> typing.Callable[[_DIn], _DIn]:
-        ...
+    def __call__(self, name: str) -> typing.Callable[[_DIn], _DIn]: ...
 
 
 class registry:
-
     """xpersist's global registry entrypoint.
 
     This is used to register serializers and other components that are used by xpersist.
